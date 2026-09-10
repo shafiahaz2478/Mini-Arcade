@@ -1,10 +1,11 @@
-"""Mini Arcade — menu launcher. All input() and print() lives here."""
+
 import random
 
 import battleship_logic
 import blackjack_logic
 import connect4_logic
 import hangman_logic
+import sudoku_logic
 
 MENU = """||           *Mini Arcade*           ||
 
@@ -27,7 +28,7 @@ def main() -> None:
         "6": run_random,
     }
     while True:
-        print()          # breathing room after a game
+        print()
         print(MENU)
         choice = read_choice()
         if choice == "7":
@@ -41,23 +42,17 @@ def main() -> None:
 
 
 def read_choice() -> str:
-    """Menu input: thin reader. Validation is main()'s job,
-    so the menu reprints on bad input."""
     return input("Enter your choice: ").strip()
 
 
 def run_random() -> None:
-    """Launches one of the five run functions, chosen uniformly at random."""
     functions = [run_sudoku, run_hangman, run_blackjack,
                  run_connect4, run_battleship]
     random.choice(functions)()
 
 
-# ---- Hangman (Section 4.3, transcribed) -------------------------------
 
 def read_letter(guessed: set) -> str:
-    """Input is main's job: keep asking until we get a usable letter
-    (or the word 'quit'). Returns a clean, valid guess."""
     while True:
         raw = input("Guess a letter (or 'quit' to quit): ").strip().lower()
         if raw == "quit":
@@ -71,7 +66,6 @@ def read_letter(guessed: set) -> str:
 
 
 def run_hangman() -> None:
-    """Hangman loop + state (word, guessed, lives)."""
     word = hangman_logic.pick_word()
     guessed, lives = set(), 6
 
@@ -94,16 +88,57 @@ def run_hangman() -> None:
             return
 
 
-# ---- SCAFFOLDING: replace one stub per milestone, then delete this note.
+
+def read_move(board: list, givens: set) -> tuple:
+    while True:
+        raw = input("Row, column, value (0 erases, or 'quit'): ").strip()
+        if raw == "quit":
+            return raw
+        parts = raw.split()
+        valid = (
+            len(parts) == 3
+            and all(p.isdecimal() for p in parts)
+            and 1 <= int(parts[0]) <= 9
+            and 1 <= int(parts[1]) <= 9
+            and 0 <= int(parts[2]) <= 9
+        )
+        if not valid:
+            print("Enter three numbers: row 1-9, column 1-9, value 0-9.")
+            continue
+        row, col, value = int(parts[0]) - 1, int(parts[1]) - 1, int(parts[2])
+        if (row, col) in givens:
+            print("That cell is part of the puzzle — it can't be changed.")
+            continue
+        if value == 0:
+            return (row, col, 0)
+        if not sudoku_logic.is_valid_placement(board, row, col, value):
+            print(f"{value} doesn't fit there — its row, column, or box "
+                  f"already has a {value}.")
+            continue
+        return (row, col, value)
+
 
 def run_sudoku() -> None:
-    print("Sudoku is not built yet.")
+    board, givens = sudoku_logic.new_puzzle()
+
+    while True:
+        print(sudoku_logic.render_board(board, givens))
+        move = read_move(board, givens)
+        if move == "quit":
+            print("You quit this puzzle.")
+            return
+        row, col, value = move
+        board = sudoku_logic.make_move(board, row, col, value)
+
+        status = sudoku_logic.game_state(board)
+        if status != "in progress":
+            print(sudoku_logic.render_board(board, givens))   # final board...
+            print(status)                                     # ...then the line
+            return
 
 
-# ---- Blackjack (Section 4.4, transcribed) -----------------------------
 
 def read_action() -> str:
-    """Blackjack input: hit / stand / quit, re-asked otherwise."""
     while True:
         raw = input("Hit or stand? (or 'quit'): ").strip().lower()
         if raw in ("h", "hit"):
@@ -116,7 +151,6 @@ def read_action() -> str:
 
 
 def run_blackjack() -> None:
-    """Blackjack loop + state (deck, player, dealer)."""
     deck = blackjack_logic.new_deck()
     deck, player, dealer = blackjack_logic.deal_initial(deck)
     print(blackjack_logic.render_hands(player, dealer, True))
@@ -137,16 +171,12 @@ def run_blackjack() -> None:
             return
 
 
-# ---- Connect 4 (Section 4.5, transcribed) -----------------------------
-
 def read_column(board: list, mark: str) -> int:
-    """Connect 4 input: 1-7 and column not full, re-asked otherwise.
-    Returns the 0-based column index, or the string 'quit'."""
     while True:
         raw = input(f"Player {mark}, choose a column (1-7 or 'quit'): ").strip()
         if raw == "quit":
             return raw
-        if len(raw) == 1 and "1" <= raw <= "7":   # mirrors read_letter's a-z check
+        if len(raw) == 1 and "1" <= raw <= "7":
             col = int(raw) - 1
             if connect4_logic.column_is_full(board, col):
                 print(f"Column {col + 1} is full — choose another.")
@@ -157,7 +187,6 @@ def read_column(board: list, mark: str) -> int:
 
 
 def run_connect4() -> None:
-    """Connect 4 loop + state (board, whose turn)."""
     board = connect4_logic.new_board()
     mark = "X"
 
@@ -171,16 +200,12 @@ def run_connect4() -> None:
 
         status = connect4_logic.game_state(board)
         if status != "in progress":
-            print(connect4_logic.render(board))   # show the winning board...
-            print(status)                         # ...then the final line
+            print(connect4_logic.render(board))
+            print(status)
             return
         mark = "O" if mark == "X" else "X"
 
-# ---- Battleship (Section 4.6, transcribed) ----------------------------
-
 def read_coords(shots: set) -> tuple:
-    """Battleship input: parse 'row col', cell not already fired.
-    Returns the 0-based (row, col), or the string 'quit'."""
     while True:
         raw = input("Fire at row, column (or 'quit'): ").strip()
         if raw == "quit":
@@ -202,19 +227,15 @@ def read_coords(shots: set) -> tuple:
 
 
 def run_battleship() -> None:
-    """Battleship loop + state (enemy_fleet, shots, player_fleet, computer_shots).
-    Classic turn rule: a hit — sinking hits included — grants another shot;
-    a miss passes the turn. Both sides."""
     player_fleet = battleship_logic.place_fleet()
     enemy_fleet = battleship_logic.place_fleet()
     shots, computer_shots = set(), set()
 
     while True:
         print(battleship_logic.render_player_board(player_fleet, computer_shots))
-        print()                            # cosmetic: gap between the boards
+        print()
         print(battleship_logic.render_enemy_board(enemy_fleet, shots))
 
-        # --- your turn: keep firing while you hit ---
         while True:
             coords = read_coords(shots)
             if coords == "quit":
@@ -231,7 +252,7 @@ def run_battleship() -> None:
                 print(status)
                 return
             if outcome == "miss":
-                break                       # your turn ends — pass it over
+                break
 
         while True:
             computer_shots, outcome, report = battleship_logic.computer_fire(
