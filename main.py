@@ -91,7 +91,7 @@ def run_hangman() -> None:
 
 def read_move(board: list, givens: set) -> tuple:
     while True:
-        raw = input("Row, column, value (0 erases, or 'quit'): ").strip()
+        raw = input("Row, column, value (0 erases, or 'quit'): ").strip().lower()
         if raw == "quit":
             return raw
         parts = raw.split()
@@ -173,7 +173,7 @@ def run_blackjack() -> None:
 
 def read_column(board: list, mark: str) -> int:
     while True:
-        raw = input(f"Player {mark}, choose a column (1-7 or 'quit'): ").strip()
+        raw = input(f"Player {mark}, choose a column (1-7 or 'quit'): ").strip().lower()
         if raw == "quit":
             return raw
         if len(raw) == 1 and "1" <= raw <= "7":
@@ -207,7 +207,7 @@ def run_connect4() -> None:
 
 def read_coords(shots: set) -> tuple:
     while True:
-        raw = input("Fire at row, column (or 'quit'): ").strip()
+        raw = input("Fire at row, column (or 'quit'): ").strip().lower()
         if raw == "quit":
             return raw
         parts = raw.split()
