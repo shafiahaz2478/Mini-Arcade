@@ -20,21 +20,15 @@ To run the app: `python main.py`
 
 ```
 ||           *Mini Arcade*           ||
+
+1. Sudoku
+2. Hangman
+3. Blackjack
+4. Connect 4
+5. Battleship
+6. Give me something
+7. Exit
 ```
-
-`1. Sudoku` 
-
-`2. Hangman` 
-
-`3. Blackjack` 
-
-`4. Connect 4` 
-
-`5. Battleship` 
-
-`6. Give me something` 
-
-`7. Exit` 
 
 - A prompt line: `Enter your choice:` 
 
@@ -50,33 +44,18 @@ Selecting 1–5 starts that specific game. Once the game session ends, the main 
 
 ```
 Enter your choice: 2
-```
-
-```
 [Hangman starts]
-```
-
-```
 ...
 [Hangman ends]
 ||           *Mini Arcade*           ||
-```
 
-`1. Sudoku` 
-
-`2. Hangman` 
-
-`3. Blackjack` 
-
-`4. Connect 4` 
-
-`5. Battleship` 
-
-`6. Give me something` 
-
-`7. Exit` 
-
-```
+1. Sudoku
+2. Hangman
+3. Blackjack
+4. Connect 4
+5. Battleship
+6. Give me something
+7. Exit
 Enter your choice:
 ```
 
@@ -86,9 +65,6 @@ One of the 5 games is selected uniformly at random and started exactly as if the
 
 ```
 Enter your choice: 6
-```
-
-```
 [A randomly chosen game starts, e.g. Connect 4]
 ```
 
@@ -98,9 +74,6 @@ A goodbye message is printed and the program terminates — no menu is shown aft
 
 ```
 Enter your choice: 7
-```
-
-```
 Thanks for playing! Goodbye.
 ```
 
@@ -118,7 +91,7 @@ Thanks for playing! Goodbye.
 
 
 
-## **Test Cases (overview)** 
+## **Test Cases** 
 
 |**Traces To**|**Input**|**Expected Output**|
 |---|---|---|
