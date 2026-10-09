@@ -107,26 +107,37 @@ All typing and printing lives in `main.py`. The five `*_logic.py` files hold onl
 
 ## Running the tests
 
-Put the test files in the same folder as the code files (or run from a folder where both are importable), then:
+Install pytest (if not already installed):
 
 ```
-python -m unittest discover -p "test_*.py"
+pip install pytest
+```
+
+Run the full suite from the project root:
+
+```
+pytest
 ```
 
 To run one game's tests:
 
 ```
-python -m unittest test_blackjack
+pytest tests/test_blackjack.py
+```
+
+To see verbose output with each test name:
+
+```
+pytest -v
 ```
 
 | File | What it covers |
 |------|----------------|
-| `test_main.py` | The menu and launcher |
-| `test_sudoku.py` | Sudoku logic, input, and full sessions |
-| `test_hangman.py` | Hangman logic, input, and full sessions |
-| `test_blackjack.py` | Blackjack logic, input, and full sessions |
-| `test_connect4.py` | Connect 4 logic, input, and full sessions |
-| `test_battleship.py` | Battleship logic, input, and full sessions |
-| `helpers.py` | Shared helper that fakes typed input (not a test file) |
+| `tests/test_sudoku.py` | Sudoku logic, input, and full sessions |
+| `tests/test_hangman.py` | Hangman logic, input, and full sessions |
+| `tests/test_blackjack.py` | Blackjack logic, input, and full sessions |
+| `tests/test_connect4.py` | Connect 4 logic, input, and full sessions |
+| `tests/test_battleship.py` | Battleship logic, input, and full sessions |
+| `tests/helpers.py` | Shared helper that fakes typed input (not a test file) |
 
-There are 167 tests in total.
+There are 157 tests in total.
